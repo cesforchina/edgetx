@@ -76,6 +76,25 @@
 #define VBUS_MONITOR_GPIO               (GPIOJ)
 #define VBUS_MONITOR_PIN                (GPIO_Pin_14)
 
+// Rotary Encoder
+#define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM5
+#define ROTARY_ENCODER_GPIO             GPIOD
+#define ROTARY_ENCODER_GPIO_PIN_A       GPIO_Pin_12 // PD.12
+#define ROTARY_ENCODER_GPIO_PIN_B       GPIO_Pin_13 // PD.13
+#define ROTARY_ENCODER_POSITION()       ((ROTARY_ENCODER_GPIO->IDR >> 12) & 0x03)
+#define ROTARY_ENCODER_EXTI_LINE1       LL_EXTI_LINE_12
+#define ROTARY_ENCODER_EXTI_LINE2       LL_EXTI_LINE_13
+#if !defined(USE_EXTI15_10_IRQ)
+  #define USE_EXTI15_10_IRQ
+  #define EXTI15_10_IRQ_Priority 5
+#endif
+#define ROTARY_ENCODER_EXTI_PORT        LL_SYSCFG_EXTI_PORTD
+#define ROTARY_ENCODER_EXTI_SYS_LINE1   LL_SYSCFG_EXTI_LINE12
+#define ROTARY_ENCODER_EXTI_SYS_LINE2   LL_SYSCFG_EXTI_LINE13
+#define ROTARY_ENCODER_TIMER            TIM5
+#define ROTARY_ENCODER_TIMER_IRQn       TIM5_IRQn
+#define ROTARY_ENCODER_TIMER_IRQHandler TIM5_IRQHandler
+
 // Switches
 #define HARDWARE_SWITCH_A
 #define STORAGE_SWITCH_A
@@ -279,7 +298,7 @@
 //used in BOOTLOADER
 #define SERIAL_RCC_AHB1Periph           0
 #define SERIAL_RCC_APB1Periph           0
-#define ROTARY_ENCODER_RCC_APB1Periph   0
+//#define ROTARY_ENCODER_RCC_APB1Periph   0
 
 // SD card
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_DMA2)

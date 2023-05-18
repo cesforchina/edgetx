@@ -24,6 +24,10 @@
 
 #include "definitions.h"
 #include "opentx_constants.h"
+
+// Defines used in board_common.h
+#define ROTARY_ENCODER_NAVIGATION
+
 #include "board_common.h"
 #include "hal.h"
 #include "hal/serial_port.h"
@@ -269,6 +273,10 @@ bool getTrimsAsButtons();
 #define DBLKEYS_PRESSED_UP_DWN(in)      (false)
 #define DBLKEYS_PRESSED_RGT_UP(in)      (false)
 #define DBLKEYS_PRESSED_LFT_DWN(in)     (false)
+
+// Rotary encoder driver
+void rotaryEncoderInit();
+void rotaryEncoderCheck();
 
 // ADC driver
 #define NUM_POTS                        2

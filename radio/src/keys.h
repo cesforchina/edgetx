@@ -161,6 +161,11 @@ inline bool IS_KEY_EVT(event_t evt, uint8_t key)
   #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
   #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT)
   #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT)
+#elif defined(PCBNV14)
+  #define EVT_ROTARY_BREAK             EVT_KEY_BREAK(KEY_ENTER)
+  #define EVT_ROTARY_LONG              EVT_KEY_LONG(KEY_ENTER)
+  #define IS_NEXT_EVENT(event)         (event==EVT_ROTARY_RIGHT)
+  #define IS_PREVIOUS_EVENT(event)     (event==EVT_ROTARY_LEFT)
 #elif defined(ROTARY_ENCODER_NAVIGATION)
   #define EVT_ROTARY_BREAK             0xcf
   #define EVT_ROTARY_LONG              0xce

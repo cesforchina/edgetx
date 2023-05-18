@@ -16,6 +16,7 @@ set(HAPTIC YES)
 set(GUI_DIR colorlcd)
 set(BITMAPS_DIR 480x272)
 set(HARDWARE_EXTERNAL_MODULE YES)
+set(ROTARY_ENCODER YES)
 
 set(TARGET_DIR nv14)
 add_definitions(-DHARDWARE_TRAINER_JACK)
@@ -150,10 +151,12 @@ set(FIRMWARE_SRC
   boards/generic_stm32/aux_ports.cpp
   targets/common/arm/stm32/stm32_hal_adc.cpp
   targets/common/arm/stm32/timers_driver.cpp
+  targets/common/arm/stm32/stm32_exti_driver.cpp
   targets/common/arm/stm32/mixer_scheduler_driver.cpp
   targets/common/arm/stm32/extmodule_driver.cpp
   targets/common/arm/stm32/stm32_pulse_driver.cpp
   targets/common/arm/stm32/stm32_usart_driver.cpp
+  targets/common/arm/stm32/rotary_encoder_driver.cpp
   targets/common/arm/stm32/trainer_driver.cpp
   targets/common/arm/stm32/pwr_driver.cpp
   targets/common/arm/stm32/sdio_sd.c
