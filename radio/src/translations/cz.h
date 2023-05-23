@@ -63,7 +63,6 @@
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT","FrSky D","FrSky D (kabel)","TBS Crossfire","Spektrum","AFHDS2A IBUS","Multi Telemetrie"
 
 #define TR_SBUS_INVERSION_VALUES       "normal","neinvertováno"
-#define TR_MULTI_TELEMETRY_MODE        "VYP","ZAP","ZAP+Aux","ZAP+Aux"
 #define TR_MULTI_CUSTOM                "Vlastní"
 #define TR_VTRIMINC                    "Expo","ExJemný","Jemný","Střední","Hrubý"
 #define TR_VDISPLAYTRIMS               "Ne","Změna","Ano"
@@ -525,7 +524,7 @@
 #define TR_ALARMSDISABLED              "Alarmy jsou zakázány"
 #define TR_PRESSANYKEY                 TR("\006Stiskni klávesu", "Stiskni klávesu")
 #define TR_BADEEPROMDATA               TR("\006Chyba dat EEPROM", "Chyba dat EEPROM")
-#define TR_BAD_RADIO_DATA              "Chybná data rádia"
+#define TR_BAD_RADIO_DATA              "Chybějící nebo poškozená data vysílače"
 #define TR_RADIO_DATA_RECOVERED        TR3("Použití zálohy dat TX","Použití zálohy dat vysílače","Nastavení vysílače bylo obnoveno ze zálohy")
 #define TR_RADIO_DATA_UNRECOVERABLE    TR3("Neplatné nastavení TX","Neplatné nastavení vysílače", "Nelze načíst platné nastavení vysílače")
 #define TR_EEPROMFORMATTING            TR("\004Formatování EEPROM", "Formatování EEPROM")
@@ -1289,3 +1288,7 @@
 #define TR_SIGNAL_OUTPUT          "Signal output"
 #define TR_SERIAL_BUS             "Serial bus"
 #define TR_SYNC                   "Sync"
+
+#define TR_VIEW_OPTIONS           "Enabled Features"
+#define TR_RADIO_MENU_TABS        "Radio Menu Tabs"
+#define TR_MODEL_MENU_TABS        "Model Menu Tabs"

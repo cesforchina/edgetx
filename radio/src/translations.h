@@ -205,7 +205,8 @@ extern const char* const STR_SBUS_INVERSION_VALUES[];
 
 extern const char* const STR_MULTI_PROTOCOLS[];
 extern const char* const STR_MULTI_POWER[];
-extern const char* const STR_MULTI_TELEMETRY_MODE[];
+extern const char* const STR_MULTI_BAYANG_OPTIONS[];
+extern const char* const STR_MULTI_DSM_OPTIONS[];
 extern const char* const STR_MULTI_WBUS_MODE[];
 extern const char* const STR_SPORT_MODES[];
 extern const char* const STR_FSGROUPS[];
@@ -824,6 +825,10 @@ extern const char STR_ANALOG_SERVO[];
 extern const char STR_SIGNAL_OUTPUT[];
 extern const char STR_SERIAL_BUS[];
 extern const char STR_SYNC[];
+
+extern const char STR_VIEW_OPTIONS[];
+extern const char STR_RADIO_MENU_TABS[];
+extern const char STR_MODEL_MENU_TABS[];
 
 
 struct LanguagePack {

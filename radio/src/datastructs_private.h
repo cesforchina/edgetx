@@ -446,10 +446,6 @@ PACK(struct TrainerModuleData {
  * Module structure
  */
 
-// Only used in case switch and if statements as "virtual" protocol
-#define MM_RF_CUSTOM_SELECTED 0xff
-#define MULTI_MAX_PROTOCOLS 127 //  rfProtocol:4 +  rfProtocolExtra:3
-
 PACK(struct PpmModule {
   int8_t  delay:6;
   uint8_t pulsePol:1;
@@ -768,6 +764,22 @@ PACK(struct ModelData {
   uint8_t usbJoystickIfMode:3 ENUM(USBJoystickIfMode);
   uint8_t usbJoystickCircularCut:4;
   USBJoystickChData usbJoystickCh[USBJ_MAX_JOYSTICK_CHANNELS];
+  
+  // Radio level tabs control (model settings)
+#if defined(COLORLCD)
+  uint8_t radioThemesDisabled:2 ENUM(ModelOverridableEnable);
+#endif
+  uint8_t radioGFDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t radioTrainerDisabled:2 ENUM(ModelOverridableEnable);
+  // Model level tabs control (model setting)
+  uint8_t modelHeliDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelFMDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelCurvesDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelGVDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelLSDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelSFDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelCustomScriptsDisabled:2 ENUM(ModelOverridableEnable);
+  uint8_t modelTelemetryDisabled:2 ENUM(ModelOverridableEnable);
 });
 
 /*
@@ -871,7 +883,7 @@ PACK(struct RadioData {
   uint8_t disableRtcWarning:1;
   uint8_t keysBacklight:1;
   NOBACKUP(uint8_t spare1:1 SKIP);
-  NOBACKUP(uint8_t internalModule ENUM(ModuleType));
+  uint8_t internalModule ENUM(ModuleType);
   NOBACKUP(TrainerData trainer);
   NOBACKUP(uint8_t view);            // index of view in main screen
   NOBACKUP(BUZZER_FIELD); /* 2bits */
@@ -959,6 +971,22 @@ PACK(struct RadioData {
 #if defined(COLORLCD)
   NOBACKUP(char selectedTheme[SELECTED_THEME_NAME_LEN]);
 #endif
+
+  // Radio level tabs control (global settings)
+#if defined(COLORLCD)
+  uint8_t radioThemesDisabled:1;
+#endif
+  uint8_t radioGFDisabled:1;
+  uint8_t radioTrainerDisabled:1;
+  // Model level tabs control (global setting)
+  uint8_t modelHeliDisabled:1;
+  uint8_t modelFMDisabled:1;
+  uint8_t modelCurvesDisabled:1;
+  uint8_t modelGVDisabled:1;
+  uint8_t modelLSDisabled:1;
+  uint8_t modelSFDisabled:1;
+  uint8_t modelCustomScriptsDisabled:1;
+  uint8_t modelTelemetryDisabled:1;
 });
 
 #undef SWITCHES_WARNING_DATA

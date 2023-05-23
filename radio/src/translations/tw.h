@@ -60,7 +60,6 @@
 #define TR_TELEMETRY_PROTOCOLS          "FrSky S.PORT","FrSky D","FrSky D (cable)","TBS Crossfire","Spektrum","AFHDS2A IBUS","Multi Telemetry"
 
 #define TR_SBUS_INVERSION_VALUES       "normal","not inverted"
-#define TR_MULTI_TELEMETRY_MODE        "Off","On","Off+Aux","On+Aux"
 #define TR_MULTI_CUSTOM                "自定義"
 #define TR_VTRIMINC                     "指數","很小","較小","中等","較大"
 #define TR_VDISPLAYTRIMS                "不顯示","改變時","始終顯示"
@@ -518,7 +517,7 @@
 #define TR_ALARMSDISABLED              "已禁用報警"
 #define TR_PRESSANYKEY                 TR("\010按任意鍵", "按任意鍵")
 #define TR_BADEEPROMDATA               "存儲數據錯誤"
-#define TR_BAD_RADIO_DATA              "系統數據錯誤"
+#define TR_BAD_RADIO_DATA              "無法讀取系統設置參數, 請檢查SD卡"
 #define TR_RADIO_DATA_RECOVERED        TR3("Using backup radio data","Using backup radio settings","Radio settings recovered from backup")
 #define TR_RADIO_DATA_UNRECOVERABLE    TR3("Radio settings invalid","Radio settings not valid", "Unable to read valid radio settings")
 #define TR_EEPROMFORMATTING            "格式化存儲"
@@ -1285,3 +1284,7 @@
 #define TR_SIGNAL_OUTPUT          "信號強度輸出"
 #define TR_SERIAL_BUS             "串行總線"
 #define TR_SYNC                   "同步"
+
+#define TR_VIEW_OPTIONS           "Enabled Features"
+#define TR_RADIO_MENU_TABS        "Radio Menu Tabs"
+#define TR_MODEL_MENU_TABS        "Model Menu Tabs"

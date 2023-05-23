@@ -63,7 +63,6 @@
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT","FrSky D","FrSky D (Kabel)","TBS Crossfire","Spektrum","AFHDS2A IBUS","Multi Telemetrie"
 
 #define TR_SBUS_INVERSION_VALUES       "normal","nicht inv."
-#define TR_MULTI_TELEMETRY_MODE        "Aus","Ein","Aus+Aux","Ein+Aux"
 #define TR_MULTI_CUSTOM                "Benutzer"
 #define TR_VTRIMINC                    TR("Expo","Exponentiell"),TR("ExFein","Extrafein"),"Fein","Mittel","Grob"
 #define TR_VDISPLAYTRIMS               "Nein","Kurz","Ja"  // Trimmwerte Keine, kurze Anzeigen, Ja
@@ -524,7 +523,7 @@
 #define TR_ALARMSDISABLED              "Alarme ausgeschaltet"
 #define TR_PRESSANYKEY                 TR("Taste drücken",CENTER"Taste drücken")
 #define TR_BADEEPROMDATA               "EEPROM ungültig"
-#define TR_BAD_RADIO_DATA              "Bad Radio Data"
+#define TR_BAD_RADIO_DATA              "Fehlende oder fehlerhafte Daten"
 #define TR_RADIO_DATA_RECOVERED        TR3("Using backup radio data","Using backup radio settings","Radio settings recovered from backup")
 #define TR_RADIO_DATA_UNRECOVERABLE    TR3("Radio settings invalid","Radio settings not valid", "Unable to read valid radio settings")
 #define TR_EEPROMFORMATTING            "EEPROM Initialisieren"
@@ -1288,3 +1287,7 @@
 #define TR_SIGNAL_OUTPUT          "Signal output"
 #define TR_SERIAL_BUS             "Serial bus"
 #define TR_SYNC                   "Sync"
+
+#define TR_VIEW_OPTIONS           "Enabled Features"
+#define TR_RADIO_MENU_TABS        "Radio Menu Tabs"
+#define TR_MODEL_MENU_TABS        "Model Menu Tabs"

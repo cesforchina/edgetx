@@ -136,20 +136,6 @@ void MultiRfProtocols::RfProto::fillSubProtoList(const char *const *str, int n)
   }
 }
 
-uint8_t MultiRfProtocols::RfProto::getOption() const
-{
-  uint8_t opt = flags >> 4;
-  if (opt >= getMaxMultiOptions()) {
-    opt = 1; // Unknown options are defaulted to type 1 (basic option)
-  }
-  return opt;
-}
-
-const char* MultiRfProtocols::RfProto::getOptionStr() const
-{
-  return mm_options_strings::options[getOption()];
-}
-
 MultiRfProtocols* MultiRfProtocols::instance(unsigned int moduleIdx)
 {
   if (moduleIdx >= NUM_MODULES) return nullptr;
@@ -284,8 +270,7 @@ bool MultiRfProtocols::scanReply(const uint8_t* packet, uint8_t len)
             //      (const char*)packet);
 
             int proto = replyProtoId - 1;
-            if (proto != MODULE_SUBTYPE_MULTI_CONFIG &&
-                proto != MODULE_SUBTYPE_MULTI_SCANNER) {
+            if (isMultiProtocolSelectable(proto)) {
               RfProto rfProto(proto);
               if (rfProto.parse(packet, len)) {
                 proto2idx[proto] = protoList.size();
@@ -363,7 +348,7 @@ void MultiRfProtocols::fillBuiltinProtos()
   // build the list of static protos
   protoList.clear();
   protoList.reserve(MODULE_SUBTYPE_MULTI_LAST - MODULE_SUBTYPE_MULTI_FIRST + 1);
-  for (; pdef->protocol != 0xfe; pdef++) {
+  for (; pdef->protocol != MODULE_SUBTYPE_MULTI_SENTINEL; pdef++) {
     RfProto rfProto(pdef->protocol);
 
     if (pdef->protocol == MM_RF_CUSTOM_SELECTED) break;  // skip custom proto

@@ -59,7 +59,6 @@
 #define TR_TELEMETRY_PROTOCOLS         "FrSky S.PORT","FrSky D","FrSky D (cable)","TBS Crossfire","Spektrum","AFHDS2A IBUS","Multi Telemetry"
 
 #define TR_SBUS_INVERSION_VALUES       "標準","リバースなし"
-#define TR_MULTI_TELEMETRY_MODE        "OFF","ON","OFF+AUX","ON+AUX"
 #define TR_MULTI_CUSTOM                "カスタム"
 #define TR_VTRIMINC                    "ステップExpo","ステップ極小","ステップ小","ステップ中","ステップ大"
 #define TR_VDISPLAYTRIMS               "非表示","変更時","常時表示"
@@ -518,7 +517,7 @@
 #define TR_ALARMSDISABLED              "アラーム無効"
 #define TR_PRESSANYKEY                 TR("\010Press any Key", "任意のキーを押してください")
 #define TR_BADEEPROMDATA               "EEPROMデータが不良です"
-#define TR_BAD_RADIO_DATA              "送信機データが不良です"
+#define TR_BAD_RADIO_DATA              "送信機データ不具合、もしくは存在しません"
 #define TR_RADIO_DATA_RECOVERED        TR3("バックアップした送信機データを使用","バックアップした送信機設定を使用","バックアップから送信機設定を復元")
 #define TR_RADIO_DATA_UNRECOVERABLE    TR3("送信機設定が無効です","送信機設定が有効ではありません", "有効な送信機設定を読み込めません")
 #define TR_EEPROMFORMATTING            "EEPROMをフォーマットします"
@@ -1282,3 +1281,7 @@
 #define TR_SIGNAL_OUTPUT          "Signal output"
 #define TR_SERIAL_BUS             "Serial bus"
 #define TR_SYNC                   "Sync"
+
+#define TR_VIEW_OPTIONS           "Enabled Features"
+#define TR_RADIO_MENU_TABS        "Radio Menu Tabs"
+#define TR_MODEL_MENU_TABS        "Model Menu Tabs"
