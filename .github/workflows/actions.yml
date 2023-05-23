@@ -3,10 +3,11 @@ name: Run tests and package firmware
 on:
   push:
     branches:
-      - '2.6'
-      - '2.7'
-      - '2.8'
-      - 'main'
+#     - '2.6'
+#     - '2.7'
+#     - '2.8'
+#     - 'main'
+      - 'nv14_test'
     tags:
       - v*
     paths-ignore:
@@ -22,10 +23,11 @@ on:
       - '.devcontainer/**'
   pull_request:
     branches:
-      - '2.6'
-      - '2.7'
-      - '2.8'
-      - 'main'
+#     - '2.6'
+#     - '2.7'
+#     - '2.8'
+#     - 'main'
+      - 'nv14_test'
     paths-ignore:
       - '**.md'
       - '.github/ISSUE_TEMPLATE/**'
@@ -47,24 +49,24 @@ jobs:
       matrix:
         target:
           - nv14
-          - t12
-          - t16
-          - t18
-          - t8
-          - tlite
-          - tx12
-          - tx16s
-          - x10
-          - x12s
-          - x7
-          - x9d
-          - x9dp
-          - x9dp2019
-          - x9e
-          - x9lite
-          - x9lites
-          - xlite
-          - xlites
+#         - t12
+#         - t16
+#         - t18
+#         - t8
+#         - tlite
+#         - tx12
+#         - tx16s
+#         - x10
+#         - x12s
+#         - x7
+#         - x9d
+#          - x9dp
+#         - x9dp2019
+#         - x9e
+#         - x9lite
+#         - x9lites
+#         - xlite
+#         - xlites
     container:
       image: ghcr.io/edgetx/edgetx-dev:latest
       volumes:
@@ -92,20 +94,20 @@ jobs:
       matrix:
         target:
           - nv14
-          - t12
-          - t16
-          - t18
-          - t8;zorro;commando8
-          - tlite;tlitef4;tpro;lr3pro
-          - tx12;tx12mk2;boxer
-          - tx16s
-          - x10;x10-access
-          - x12s
-          - x7;x7-access
-          - x9d;x9dp;x9dp2019
-          - x9e;x9e-hall
-          - x9lite;x9lites
-          - xlite;xlites
+#         - t12
+#         - t16
+#         - t18
+#         - t8;zorro;commando8
+#         - tlite;tlitef4;tpro;lr3pro
+#         - tx12;tx12mk2;boxer
+#         - tx16s
+#         - x10;x10-access
+#         - x12s
+#         - x7;x7-access
+#         - x9d;x9dp;x9dp2019
+#         - x9e;x9e-hall
+#         - x9lite;x9lites
+#         - xlite;xlites
     container:
       image: ghcr.io/edgetx/edgetx-dev:latest
       volumes:
