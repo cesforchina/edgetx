@@ -241,6 +241,14 @@ void boardInit()
   adcInit(&stm32_hal_adc_driver);
   hapticInit();
 
+  #if NUM_PWMSTICKS > 0
+  sticksPwmInit();
+  delay_ms(20);
+  if (pwm_interrupt_count < 32) {
+    hardwareOptions.sticksPwmDisabled = true;
+  }
+#endif
+
 
  #if defined(RTCLOCK)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called

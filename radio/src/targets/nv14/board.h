@@ -343,6 +343,14 @@ enum CalibratedAnalogs {
 
 extern uint16_t adcValues[NUM_ANALOGS];
 
+#if NUM_PWMSTICKS > 0
+#define STICKS_PWM_ENABLED()          (!hardwareOptions.sticksPwmDisabled)
+void sticksPwmInit();
+void sticksPwmRead(uint16_t * values);
+extern volatile uint32_t pwm_interrupt_count;
+#else
+#define STICKS_PWM_ENABLED()          (false)
+#endif
 
 #define BATTERY_WARN                  36 // 3.6V
 #define BATTERY_MIN                   35 // 3.5V
