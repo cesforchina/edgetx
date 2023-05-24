@@ -71,8 +71,8 @@ uint32_t readKeys()
 
   if (KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
     result |= 1 << KEY_ENTER;
-  if (KEYS_GPIO_REG_TELEM & KEYS_GPIO_PIN_TELEM)
-    result |= 1 << KEY_TELEM;
+  if (KEYS_GPIO_REG_MODEL& KEYS_GPIO_PIN_MODEL)
+    result |= 1 << KEY_MODEL;
   if (KEYS_GPIO_REG_PGDN & KEYS_GPIO_PIN_PGDN)
     result |= 1 << KEY_PGDN;
   if (KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
