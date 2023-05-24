@@ -175,6 +175,9 @@ void keysInit()
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOH_PINS;
   GPIO_Init(GPIOH, &GPIO_InitStructure);
 
+  GPIO_InitStructure.GPIO_Pin = KEYS_GPIOI_PINS;
+  GPIO_Init(GPIOI, &GPIO_InitStructure);
+
   GPIO_InitStructure.GPIO_Pin = KEYS_GPIOJ_PINS;
   GPIO_Init(GPIOJ, &GPIO_InitStructure);
   setTrimsAsButtons(false);
