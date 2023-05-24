@@ -51,10 +51,10 @@
 // Keys
 #define KEYS_GPIO_REG_ENTER             GPIOI->IDR
 #define KEYS_GPIO_PIN_ENTER             GPIO_Pin_3  // PI.03
-#define KEYS_GPIO_REG_MENU              GPIOI->IDR
-#define KEYS_GPIO_PIN_MENU              GPIO_Pin_4  // PI.04
-#define KEYS_GPIO_REG_PAGE              GPIOI->IDR
-#define KEYS_GPIO_PIN_PAGE              GPIO_Pin_6  // PI.06
+#define KEYS_GPIO_REG_TELEM              GPIOI->IDR
+#define KEYS_GPIO_PIN_TELEM              GPIO_Pin_4  // PI.04
+#define KEYS_GPIO_REG_PGDN              GPIOI->IDR
+#define KEYS_GPIO_PIN_PGDN              GPIO_Pin_6  // PI.06
 #define KEYS_GPIO_REG_EXIT              GPIOI->IDR
 #define KEYS_GPIO_PIN_EXIT              GPIO_Pin_7  // PI.07
 
