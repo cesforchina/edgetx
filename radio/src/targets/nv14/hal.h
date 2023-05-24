@@ -48,6 +48,16 @@
 */
 
 
+// Keys
+#define KEYS_GPIO_REG_ENTER             GPIOI->IDR
+#define KEYS_GPIO_PIN_ENTER             GPIO_Pin_3  // PI.03
+#define KEYS_GPIO_REG_MENU              GPIOI->IDR
+#define KEYS_GPIO_PIN_MENU              GPIO_Pin_4  // PI.04
+#define KEYS_GPIO_REG_PAGE              GPIOI->IDR
+#define KEYS_GPIO_PIN_PAGE              GPIO_Pin_6  // PI.06
+#define KEYS_GPIO_REG_EXIT              GPIOI->IDR
+#define KEYS_GPIO_PIN_EXIT              GPIO_Pin_7  // PI.07
+
 // Trims
 #define TRIMS_GPIO_REG_RHL              GPIOD->IDR
 #define TRIMS_GPIO_PIN_RHL              GPIO_Pin_7  // PD.07
@@ -113,13 +123,14 @@
 #define HARDWARE_SWITCH_H
 #define STORAGE_SWITCH_H
 
-// Index of all switches / trims
-#define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOJ)
+// Index of all keys / switches / trims
+#define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
 #define KEYS_GPIOB_PINS                 (GPIO_Pin_15)
 #define KEYS_GPIOC_PINS                 (GPIO_Pin_13)
 #define KEYS_GPIOD_PINS                 (GPIO_Pin_7)
 #define KEYS_GPIOG_PINS                 (GPIO_Pin_2 | GPIO_Pin_10 | GPIO_Pin_11)
 #define KEYS_GPIOH_PINS                 (GPIO_Pin_2 | GPIO_Pin_7)
+#define KEYS_GPIOI_PINS                 (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_7)
 #define KEYS_GPIOJ_PINS                 (GPIO_Pin_0 | GPIO_Pin_12)
 
 // ADC

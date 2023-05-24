@@ -69,12 +69,22 @@ uint32_t readKeys()
   }
 #endif
 
+  if (~KEYS_GPIO_REG_ENTER & KEYS_GPIO_PIN_ENTER)
+    result |= 1 << KEY_ENTER;
+  if (~KEYS_GPIO_REG_MENU & KEYS_GPIO_PIN_MENU)
+    result |= 1 << KEY_MENU;
+  if (~KEYS_GPIO_REG_PAGE & KEYS_GPIO_PIN_PAGE)
+    result |= 1 << KEY_PAGE;
+  if (~KEYS_GPIO_REG_EXIT & KEYS_GPIO_PIN_EXIT)
+    result |= 1 << KEY_EXIT;
+
+/*
   // Enter and Exit are always supported
   if (TRIMS_GPIO_REG_RPRESS & TRIMS_GPIO_PIN_RPRESS)
     result |= 1 << KEY_ENTER;
   if (TRIMS_GPIO_REG_LPRESS & TRIMS_GPIO_PIN_LPRESS)
     result |= 1 << KEY_EXIT;
-
+*/
   return result;
 }
 
