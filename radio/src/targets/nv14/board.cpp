@@ -36,6 +36,9 @@
 #include "flysky_gimbal_driver.h"
 #include "timers_driver.h"
 
+#include "dataconstants.h"
+#include "opentx_types.h"
+
 #include "lcd_driver.h"
 #include "lcd_driver.h"
 #include "battery_driver.h"
@@ -130,7 +133,8 @@ void delay_self(int count)
                               )
 #define RCC_AHB3PeriphMinimum (SDRAM_RCC_AHB3Periph)
 
-#define RCC_APB1PeriphMinimum (INTERRUPT_xMS_RCC_APB1Periph |\
+#define RCC_APB1PeriphMinimum (ROTARY_ENCODER_RCC_APB1Periph |\
+                               INTERRUPT_xMS_RCC_APB1Periph |\
                                TIMER_2MHz_RCC_APB1Periph |\
                                BACKLIGHT_RCC_APB1Periph \
                               )
@@ -278,6 +282,9 @@ void boardInit()
 
   keysInit();
   switchInit();
+
+  rotaryEncoderInit();
+  
   audioInit();
   // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access)
   // and this section is un-initialized

@@ -25,6 +25,9 @@
 #include "definitions.h"
 #include "opentx_constants.h"
 
+// Defines used in board_common.h
+#define ROTARY_ENCODER_NAVIGATION
+
 #include "board_common.h"
 #include "hal.h"
 #include "hal/serial_port.h"
@@ -170,6 +173,10 @@ void SET_POWER_REASON(uint32_t value);
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
 #endif
+
+// Rotary encoder driver
+void rotaryEncoderInit();
+void rotaryEncoderCheck();
 
 // Power driver
 #define SOFT_PWR_CTRL

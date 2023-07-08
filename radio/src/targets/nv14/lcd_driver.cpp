@@ -1026,22 +1026,22 @@ void LCD_ST7796S_Init(void) {
   lcdWriteCommand( 0xB7);
   lcdWriteData( 0xC6);
 
-  lcdWriteCommand( 0xB9 );
-  lcdWriteData( 0x02 );
-  lcdWriteData( 0xE0 );
+  // lcdWriteCommand( 0xB9 );
+  // lcdWriteData( 0x02 );
+  // lcdWriteData( 0xE0 );
 
   lcdWriteCommand( 0xC0 );
   lcdWriteData( 0x80 );
   lcdWriteData( 0x65 );
 
   lcdWriteCommand( 0xC1 );
-  lcdWriteData( 0x0D );
+  lcdWriteData( 0x03 );
 
   lcdWriteCommand( 0xC2 );
   lcdWriteData( 0xA7 );
 
   lcdWriteCommand( 0xC5 );
-  lcdWriteData( 0x14 );
+  lcdWriteData( 0x25 );
 
   lcdWriteCommand( 0xE8 );
   lcdWriteData( 0x40 );
