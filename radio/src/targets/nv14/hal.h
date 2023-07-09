@@ -47,6 +47,16 @@
    2/3/4 SDIO
 */
 
+// Keys
+#define KEYS_GPIO_REG_ENTER             GPIOI
+#define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_3  // PI.03
+#define KEYS_GPIO_REG_MDL               GPIOI
+#define KEYS_GPIO_PIN_MDL               LL_GPIO_PIN_4  // PI.04
+#define KEYS_GPIO_REG_PAGEDN            GPIOI
+#define KEYS_GPIO_PIN_PAGEDN            LL_GPIO_PIN_6  // PI.06
+#define KEYS_GPIO_REG_EXIT              GPIOI
+#define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_7  // PI.07
+
 
 // Trims
 #define TRIMS_GPIO_REG_RHL              GPIOD
@@ -58,8 +68,8 @@
 #define TRIMS_GPIO_REG_RVU              GPIOB
 #define TRIMS_GPIO_PIN_RVU              LL_GPIO_PIN_15 // PB.15
 
-#define KEYS_GPIO_REG_ENTER             GPIOC
-#define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_13 // PC.13
+// #define KEYS_GPIO_REG_ENTER             GPIOC
+// #define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_13 // PC.13
 
 #define TRIMS_GPIO_REG_LHL              GPIOH
 #define TRIMS_GPIO_PIN_LHL              LL_GPIO_PIN_2  // PH.02
@@ -70,8 +80,8 @@
 #define TRIMS_GPIO_REG_LVD              GPIOJ
 #define TRIMS_GPIO_PIN_LVD              LL_GPIO_PIN_12 // PJ.12
 
-#define KEYS_GPIO_REG_EXIT              GPIOG
-#define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_11 // PG.11
+// #define KEYS_GPIO_REG_EXIT              GPIOG
+// #define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_11 // PG.11
 
 
 
@@ -117,13 +127,14 @@
 #define HARDWARE_SWITCH_H
 #define STORAGE_SWITCH_H
 
-// Index of all switches / trims
-#define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOJ)
+// Index of all keys / switches / trims
+#define KEYS_RCC_AHB1Periph             (RCC_AHB1Periph_GPIOB | RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOG | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_GPIOI | RCC_AHB1Periph_GPIOJ)
 #define KEYS_GPIOB_PINS                 (GPIO_Pin_15)
 #define KEYS_GPIOC_PINS                 (GPIO_Pin_13)
 #define KEYS_GPIOD_PINS                 (GPIO_Pin_7)
 #define KEYS_GPIOG_PINS                 (GPIO_Pin_2 | GPIO_Pin_10 | GPIO_Pin_11)
 #define KEYS_GPIOH_PINS                 (GPIO_Pin_2 | GPIO_Pin_7)
+#define KEYS_GPIOI_PINS                 (GPIO_Pin_3 | GPIO_Pin_4 | GPIO_Pin_6 | GPIO_Pin_7)
 #define KEYS_GPIOJ_PINS                 (GPIO_Pin_0 | GPIO_Pin_12)
 
 #define KEYS_GPIO_ACTIVE_HIGH
