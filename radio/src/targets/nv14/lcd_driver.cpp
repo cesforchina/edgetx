@@ -1012,7 +1012,7 @@ void LCD_ST7796S_Init(void) {
 
   //SET RGB STRAT
   lcdWriteCommand (0xB0 );   //SET HS VS DE CLK 上升还是下降有效
-  lcdWriteData( 0x80 );
+  lcdWriteData( 0x82 );
 
   lcdWriteCommand( 0xB4 );
   lcdWriteData( 0x01 );
