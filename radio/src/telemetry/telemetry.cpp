@@ -140,7 +140,7 @@ rxStatStruct *getRxStatLabels() {
       break;
 
     case MODULE_TYPE_FLYSKY:
-      #if defined (PCBNV14)
+      #if defined (INTERNAL_MODULE_AFHDS2A)
         extern uint32_t NV14internalModuleFwVersion;
 
         if(moduleToUse == INTERNAL_MODULE) {
