@@ -133,10 +133,11 @@
 #define ADC_RCC_AHB1Periph              (RCC_AHB1Periph_DMA2)
 #define ADC_RCC_APB2Periph              0
 
-#define ADC_GPIO_PIN_STICK_LH
-#define ADC_GPIO_PIN_STICK_LV
-#define ADC_GPIO_PIN_STICK_RV
-#define ADC_GPIO_PIN_STICK_RH
+// FLYSKY_HALL_STICKS & ADC_STICKS //or PWM STICKS
+#define ADC_GPIO_PIN_STICK_LH       GPIO_Pin_2      // PA.02
+#define ADC_GPIO_PIN_STICK_LV       GPIO_Pin_3      // PA.03
+#define ADC_GPIO_PIN_STICK_RH       GPIO_Pin_4      // PA.04
+#define ADC_GPIO_PIN_STICK_RV       GPIO_Pin_5      // PA.05
 
 #define ADC_GPIO_PIN_POT1               LL_GPIO_PIN_6      // PA.06 VRA
 #define ADC_GPIO_PIN_POT2               LL_GPIO_PIN_4      // PC.04 VRB
@@ -151,18 +152,19 @@
 
 #define ADC_GPIO_PIN_BATT               LL_GPIO_PIN_5      // PC.05
 
-// FLYSKY_HALL_STICKS
+// FLYSKY_HALL_STICKS & ADC_STICKS
 // #define ADC_GPIOA_PINS_FS               (GPIO_Pin_6 | GPIO_Pin_7)
-#define ADC_GPIOA_PINS                  (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SWH)
+#define ADC_GPIOA_PINS \
+  (ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_STICK_RH  | ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SWH)
 #define ADC_GPIOB_PINS                  (ADC_GPIO_PIN_SWA | ADC_GPIO_PIN_SWC)
 #define ADC_GPIOC_PINS \
   (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SWE | ADC_GPIO_PIN_SWF | ADC_GPIO_PIN_SWG | ADC_GPIO_PIN_BATT)
 #define ADC_GPIOF_PINS                  (ADC_GPIO_PIN_SWB | ADC_GPIO_PIN_SWD)
 
-#define ADC_CHANNEL_STICK_LH
-#define ADC_CHANNEL_STICK_LV
-#define ADC_CHANNEL_STICK_RV
-#define ADC_CHANNEL_STICK_RH
+#define ADC_CHANNEL_STICK_LH            LL_ADC_CHANNEL_2   // ADC123_IN2 -> ADC1_IN2
+#define ADC_CHANNEL_STICK_LV            LL_ADC_CHANNEL_3   // ADC123_IN3 -> ADC1_IN3
+#define ADC_CHANNEL_STICK_RH            LL_ADC_CHANNEL_4   // ADC12_IN4  -> ADC1_IN4
+#define ADC_CHANNEL_STICK_RV            LL_ADC_CHANNEL_5   // ADC12_IN5  -> ADC1_IN5
 
 #define ADC_CHANNEL_POT1                LL_ADC_CHANNEL_6   // ADC12_IN6  -> ADC1_IN6
 #define ADC_CHANNEL_POT2                LL_ADC_CHANNEL_14  // ADC12_IN14 -> ADC1_IN14
@@ -194,7 +196,7 @@
 #define ADC_EXT_DMA_STREAM_IRQ          DMA2_Stream0_IRQn
 #define ADC_EXT_DMA_STREAM_IRQHandler   DMA2_Stream0_IRQHandler
 #define ADC_EXT_SAMPTIME                LL_ADC_SAMPLINGTIME_28CYCLES
-#define ADC_VREF_PREC2                  660
+#define ADC_VREF_PREC2                  330
 
 #define ADC_DIRECTION                                                   \
     { 0 /*STICK1*/, 0 /*STICK2*/, 0 /*STICK3*/, 0 /*STICK4*/,           \

@@ -23,10 +23,12 @@
 
 #include "board.h"
 #include "boards/generic_stm32/module_ports.h"
+#include "boards/generic_stm32/analog_inputs.h"
 
 #include "hal/adc_driver.h"
 #include "hal/trainer_driver.h"
 #include "hal/switch_driver.h"
+#include "hal/rotary_encoder.h"
 
 #include "globals.h"
 #include "sdcard.h"
@@ -49,6 +51,10 @@
 #include "colors.h"
 
 #include <string.h>
+
+#if defined(PWM_STICKS)
+  #include "sticks_pwm_driver.h"
+#endif
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -238,6 +244,10 @@ void boardInit()
   init_trainer();
   battery_charge_init();
   flysky_gimbal_init();
+
+  if (!adcInit(&_adc_driver))
+  TRACE("adcInit failed");
+
   init2MhzTimer();
   init1msTimer();
   TouchInit();
@@ -292,9 +302,12 @@ void boardInit()
   monitorInit();
   adcInit(&_adc_driver);
   hapticInit();
+  
+#if defined(PWM_STICKS)
+  sticksPwmDetect();
+#endif
 
-
- #if defined(RTCLOCK)
+#if defined(RTCLOCK)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
 
