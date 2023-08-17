@@ -7,6 +7,7 @@ option(AFHDS3 "AFHDS3 TX Module" ON)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
 option(GHOST "Ghost TX Module" ON)
 option(SPACEMOUSE "Support for SpaceMouse" OFF)
+option(MODULE_SIZE_STD "Standard size TX Module" ON)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -272,7 +273,8 @@ set(FIRMWARE_SRC
   targets/common/arm/stm32/heartbeat_driver.cpp
   targets/common/arm/stm32/trainer_driver.cpp
   targets/common/arm/stm32/ads79xx.cpp
-  targets/common/arm/stm32/sdio_sd.c
+  targets/common/arm/stm32/sdio_sd.cpp
+  targets/common/arm/stm32/diskio_sdio.cpp
   )
 
 if(BOOTLOADER)

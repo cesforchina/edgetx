@@ -83,6 +83,7 @@ enum MenuRadioSetupItems {
   CASE_PCBX9E_PCBX9DP(ITEM_RADIO_SETUP_BACKLIGHT_COLOR)
   ITEM_RADIO_SETUP_FLASH_BEEP,
   CASE_SPLASH_PARAM(ITEM_RADIO_SETUP_DISABLE_SPLASH)
+  ITEM_RADIO_SETUP_START_SOUND,
   CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_ON_SPEED)
   CASE_PWR_BUTTON_PRESS(ITEM_RADIO_SETUP_PWR_OFF_SPEED)
 #if defined(PXX2)
@@ -186,6 +187,7 @@ void menuRadioSetup(event_t event)
       CASE_PCBX9E_PCBX9DP(0) // backlight color
       0, // flash beep
     CASE_SPLASH_PARAM(0) // disable splash
+    0,
     CASE_PWR_BUTTON_PRESS(0) // pwr on speed
     CASE_PWR_BUTTON_PRESS(0) // pwr off speed
     CASE_PXX2(0) // owner registration ID
@@ -525,6 +527,11 @@ void menuRadioSetup(event_t event)
         break;
 #endif
 
+      case ITEM_RADIO_SETUP_START_SOUND:
+        lcdDrawTextAlignedLeft(y, STR_PLAY_HELLO);
+        g_eeGeneral.dontPlayHello = !editCheckBox(!g_eeGeneral.dontPlayHello, RADIO_SETUP_2ND_COLUMN, y, nullptr, attr, event ) ;
+        break;
+
 #if defined(PWR_BUTTON_PRESS)
       case ITEM_RADIO_SETUP_PWR_ON_SPEED:
         lcdDrawTextAlignedLeft(y, STR_PWR_ON_DELAY);
@@ -547,9 +554,18 @@ void menuRadioSetup(event_t event)
         break;
 
       case ITEM_RADIO_SETUP_TIMEZONE:
-        lcdDrawText(INDENT_WIDTH, y, STR_TIMEZONE);
-        lcdDrawNumber(RADIO_SETUP_2ND_COLUMN, y, g_eeGeneral.timezone, attr|LEFT);
-        if (attr) CHECK_INCDEC_GENVAR(event, g_eeGeneral.timezone, -12, 12);
+        {
+          lcdDrawText(INDENT_WIDTH, y, STR_TIMEZONE);
+          int tzIndex = timezoneIndex(g_eeGeneral.timezone, g_eeGeneral.timezoneMinutes);
+          lcdDrawText(RADIO_SETUP_2ND_COLUMN, y, timezoneDisplay(tzIndex).c_str(), attr);
+          if (attr) {
+            tzIndex = checkIncDec(event, tzIndex, minTimezone(), maxTimezone(), EE_GENERAL);
+            if (checkIncDec_Ret) {
+              g_eeGeneral.timezone = timezoneHour(tzIndex);
+              g_eeGeneral.timezoneMinutes = timezoneMinute(tzIndex);
+            }
+          }
+        }
         break;
 
       case ITEM_RADIO_SETUP_ADJUST_RTC:

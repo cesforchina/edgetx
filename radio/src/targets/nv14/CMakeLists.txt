@@ -7,6 +7,7 @@ option(AFHDS3 "Support for AFHDS3" ON)
 option(GHOST "Ghost TX Module" ON)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
+option(MODULE_SIZE_STD "Standard size TX Module" ON)
 
 set(PWR_BUTTON "PRESS" CACHE STRING "Pwr button type (PRESS/SWITCH)")
 set(CPU_TYPE STM32F4)
@@ -151,7 +152,8 @@ set(FIRMWARE_SRC
   targets/common/arm/stm32/rotary_encoder_driver.cpp
   targets/common/arm/stm32/trainer_driver.cpp
   targets/common/arm/stm32/pwr_driver.cpp
-  targets/common/arm/stm32/sdio_sd.c
+  targets/common/arm/stm32/sdio_sd.cpp
+  targets/common/arm/stm32/diskio_sdio.cpp
   )
 
 # Make malloc() thread-safe

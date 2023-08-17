@@ -33,6 +33,10 @@
 #include "tasks.h"
 #include "tasks/mixer_task.h"
 
+#if defined(BLUETOOTH)
+  #include "bluetooth_driver.h"
+#endif
+
 #if defined(LIBOPENUI)
   #include "libopenui.h"
   // #include "shutdown_animation.h"
@@ -95,9 +99,14 @@ void toggleLatencySwitch()
 
 void checkValidMCU(void)
 {
-#if !defined(SIMU)
+#if !defined(SIMU) && !defined(BOOT)
   // Checks the radio MCU type matches intended firmware type
   uint32_t idcode = DBGMCU->IDCODE & 0xFFF;
+
+#if defined(RADIO_TLITE)
+  #define TARGET_IDCODE_SECONDARY   0x413
+  // Tlite ELRS have a CKS F4 run as an F2 (F4 firmware won't run on those)
+#endif
 
 #if defined(STM32F205xx)
   #define TARGET_IDCODE   0x411
@@ -112,9 +121,15 @@ void checkValidMCU(void)
   #define TARGET_IDCODE   0x0
 #endif
 
+#if defined(TARGET_IDCODE_SECONDARY)
+  if(idcode != TARGET_IDCODE && idcode != TARGET_IDCODE_SECONDARY) {
+    runFatalErrorScreen("Wrong MCU");
+  }
+#else
   if(idcode != TARGET_IDCODE) {
     runFatalErrorScreen("Wrong MCU");
   }
+#endif
 #endif
 }
 
@@ -131,7 +146,7 @@ void per10ms()
 #endif
 
   if (trimsCheckTimer) trimsCheckTimer--;
-  if (ppmInputValidityTimer) ppmInputValidityTimer--;
+  if (trainerInputValidityTimer) trainerInputValidityTimer--;
 
   if (trimsDisplayTimer)
     trimsDisplayTimer--;
@@ -182,7 +197,7 @@ void per10ms()
   if (mixWarning & 4) if(((g_tmr10ms&0xFF)==128) || ((g_tmr10ms&0xFF)==136) || ((g_tmr10ms&0xFF)==144)) AUDIO_MIX_WARNING(3);
 #endif
 
-#if defined(SDCARD)
+#if defined(SDCARD) && defined(PCBTARANIS)
   sdPoll10ms();
 #endif
 
@@ -308,8 +323,8 @@ void generalDefault()
 #endif
 
 #if defined(COLORLCD)
-  strcpy(g_eeGeneral.themeName, static_cast<OpenTxTheme *>(theme)->getName());
-  static_cast<OpenTxTheme *>(theme)->init();
+  strcpy(g_eeGeneral.themeName, static_cast<EdgeTxTheme *>(theme)->getName());
+  static_cast<EdgeTxTheme *>(theme)->init();
 #endif
 
 #if defined(PXX2)
@@ -332,6 +347,10 @@ void generalDefault()
 
 #if defined(RADIO_TPROV2)
   g_eeGeneral.rotEncMode = ROTARY_ENCODER_MODE_INVERT_BOTH;
+#endif
+
+#if defined(MANUFACTURER_RADIOMASTER)
+  g_eeGeneral.audioMuteEnable = 1;
 #endif
 
   g_eeGeneral.chkSum = 0xFFFF;
@@ -505,7 +524,7 @@ void checkBacklight()
     }
 
     if (requiredBacklightBright == BACKLIGHT_FORCED_ON) {
-      currentBacklightBright = g_eeGeneral.backlightBright;
+      currentBacklightBright = g_eeGeneral.getBrightness();
       BACKLIGHT_ENABLE();
     } else {
       bool backlightOn = ((g_eeGeneral.backlightMode == e_backlight_mode_on) ||
@@ -625,6 +644,12 @@ static void checkRTCBattery()
   }
 }
 
+void checkSDfreeStorage() {
+  if(sdIsFull()) {
+    ALERT(STR_SD_CARD, STR_SDCARD_FULL, AU_ERROR);
+  }
+}
+
 #if defined(PCBFRSKY) || defined(PCBFLYSKY)
 static void checkFailsafe()
 {
@@ -653,6 +678,8 @@ void checkAll()
   checkLowEEPROM();
 #endif
 
+  checkSDfreeStorage();
+  
   // we don't check the throttle stick if the radio is not calibrated
   if (g_eeGeneral.chkSum == evalChkSum()) {
     checkThrottleStick();
@@ -904,7 +931,7 @@ void alert(const char * title, const char * msg , uint8_t sound)
 
 #if defined(GVARS)
 #if MAX_TRIMS == 8
-int8_t trimGvar[MAX_TRIMS] = { -1, -1, -1, -1, -1, -1, -1, -1 };
+  int8_t trimGvar[MAX_TRIMS] = { -1, -1, -1, -1, -1, -1, -1, -1 };
 #elif MAX_TRIMS == 6
   int8_t trimGvar[MAX_TRIMS] = { -1, -1, -1, -1, -1, -1 };
 #elif MAX_TRIMS == 4
@@ -1078,9 +1105,16 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
 
   uint8_t calibration_needed = !(startOptions & OPENTX_START_NO_CALIBRATION) && (g_eeGeneral.chkSum != evalChkSum());
 
+#if defined(BLUETOOTH_PROBE)
+  extern volatile uint8_t btChipPresent;
+  auto oldBtMode = g_eeGeneral.bluetoothMode;
+  g_eeGeneral.bluetoothMode = BLUETOOTH_TELEMETRY;
+#endif
+
 #if defined(GUI)
   if (!calibration_needed && !(startOptions & OPENTX_START_NO_SPLASH)) {
-    AUDIO_HELLO();
+    if (!g_eeGeneral.dontPlayHello)
+      AUDIO_HELLO();
     doSplash();
   }
 #endif
@@ -1114,6 +1148,12 @@ void opentxStart(const uint8_t startOptions = OPENTX_START_DEFAULT_ARGS)
     PLAY_MODEL_NAME();
   }
 #endif
+
+#if defined(BLUETOOTH_PROBE)
+  if (bluetooth.localAddr[0] != '\0')
+    btChipPresent = 1;
+  g_eeGeneral.bluetoothMode = oldBtMode;
+#endif
 }
 
 void opentxClose(uint8_t shutdown)
@@ -1130,6 +1170,10 @@ void opentxClose(uint8_t shutdown)
     hapticOff();
 #endif
   }
+
+#if defined(LUA)
+  luaClose(&lsScripts);
+#endif
 
 #if defined(SDCARD)
   logsClose();
@@ -1168,11 +1212,6 @@ void opentxClose(uint8_t shutdown)
   luaClose(&lsWidgets);
   lsWidgets = 0;
 #endif
-#endif
-#if defined(LUA)
-  // the script context needs to be closed *after*
-  // the widgets, as it has been the first to be opened
-  luaClose(&lsScripts);
 #endif
 
 #if defined(SDCARD)
@@ -1385,7 +1424,7 @@ void moveTrimsToOffsets() // copy state of 3 primary to subtrim
   }
 
   // reset all trims, except throttle (if throttle trim)
-  for (uint8_t i=0; i<MAX_TRIMS; i++) {
+  for (uint8_t i = 0; i < keysGetMaxTrims(); i++) {
     auto thrStick = g_model.getThrottleStickTrimSource() - MIXSRC_FIRST_TRIM;
     if (i != thrStick || !g_model.thrTrim) {
       int16_t original_trim = getTrimValue(mixerCurrentFlightMode, i);
@@ -1423,6 +1462,10 @@ void opentxInit()
 
   bool radioSettingsValid = storageReadRadioSettings(false);
   (void)radioSettingsValid;
+
+#if defined(GUI) && !defined(COLORLCD)
+  lcdSetContrast();
+#endif
 #endif
 
   BACKLIGHT_ENABLE(); // we start the backlight during the startup animation
@@ -1524,7 +1567,8 @@ void opentxInit()
   initSerialPorts();
 
   currentSpeakerVolume = requiredSpeakerVolume = g_eeGeneral.speakerVolume + VOLUME_LEVEL_DEF;
-  currentBacklightBright = requiredBacklightBright = g_eeGeneral.backlightBright;
+  currentBacklightBright = requiredBacklightBright = g_eeGeneral.getBrightness();
+
 #if !defined(SOFTWARE_VOLUME)
   setScaledVolume(currentSpeakerVolume);
 #endif
@@ -1561,7 +1605,7 @@ void opentxInit()
   }
 #endif
 
-#if defined(GUI) && !defined(COLORLCD)
+#if defined(GUI) && !defined(COLORLCD) && !defined(STARTUP_ANIMATION)
   lcdSetContrast();
 #endif
 

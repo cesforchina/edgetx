@@ -212,6 +212,7 @@ class GeneralSettings {
     BeeperMode hapticMode;
     unsigned int stickMode; // TODO enum
     int timezone;
+    int timezoneMinutes;
     bool adjustRTC;
     bool optrexDisplay;
     unsigned int inactivityTimer;
@@ -220,6 +221,7 @@ class GeneralSettings {
     bool preBeep;
     bool flashBeep;
     int splashMode;
+    bool dontPlayHello;
     unsigned int backlightDelay;
     unsigned int templateSetup;  //RETA order according to chout_ar array
     int PPM_Multiplier;

@@ -126,15 +126,11 @@ void delay_self(int count)
 #define RCC_AHB1PeriphOther   (SD_RCC_AHB1Periph |\
                                AUDIO_RCC_AHB1Periph |\
                                MONITOR_RCC_AHB1Periph |\
-                               KEYS_RCC_AHB1Periph |\
-                               ADC_RCC_AHB1Periph |\
-                               AUX_SERIAL_RCC_AHB1Periph |\
                                TELEMETRY_RCC_AHB1Periph |\
                                TRAINER_RCC_AHB1Periph |\
                                AUDIO_RCC_AHB1Periph |\
                                HAPTIC_RCC_AHB1Periph |\
                                INTMODULE_RCC_AHB1Periph |\
-                               FLYSKY_HALL_RCC_AHB1Periph |\
                                EXTMODULE_RCC_AHB1Periph\
                               )
 #define RCC_AHB3PeriphMinimum (SDRAM_RCC_AHB3Periph)
@@ -146,13 +142,11 @@ void delay_self(int count)
                               )
 
 #define RCC_APB1PeriphOther   (TELEMETRY_RCC_APB1Periph |\
-                               FLYSKY_HALL_RCC_APB1Periph |\
                                MIXER_SCHEDULER_TIMER_RCC_APB1Periph \
                               )
 #define RCC_APB2PeriphMinimum (LCD_RCC_APB2Periph)
 
-#define RCC_APB2PeriphOther   (ADC_RCC_APB2Periph |\
-                               HAPTIC_RCC_APB2Periph |\
+#define RCC_APB2PeriphOther   (HAPTIC_RCC_APB2Periph |\
                                AUDIO_RCC_APB2Periph \
                               )
 
@@ -296,9 +290,6 @@ void boardInit()
   rotaryEncoderInit();
   
   audioInit();
-  // we need to initialize g_FATFS_Obj here, because it is in .ram section (because of DMA access)
-  // and this section is un-initialized
-  memset(&g_FATFS_Obj, 0, sizeof(g_FATFS_Obj));
   monitorInit();
   adcInit(&_adc_driver);
   hapticInit();

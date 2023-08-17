@@ -20,21 +20,24 @@
  */
 
 #include "hal/adc_driver.h"
+#include "hal/trainer_driver.h"
 #include "hal/switch_driver.h"
+#include "hal/module_port.h"
 
 #include "board.h"
 #include "boards/generic_stm32/module_ports.h"
 #include "boards/generic_stm32/intmodule_heartbeat.h"
+#include "boards/generic_stm32/analog_inputs.h"
 
 #include "debug.h"
 #include "rtc.h"
 
-#include "hal/adc_driver.h"
-#include "hal/module_port.h"
-
-#include "../common/arm/stm32/timers_driver.h"
-
+#include "timers_driver.h"
 #include "dataconstants.h"
+
+#if defined(FLYSKY_GIMBAL)
+  #include "flysky_gimbal_driver.h"
+#endif
 
 #if !defined(BOOT)
   #include "opentx.h"
@@ -45,10 +48,6 @@
 
 #if defined(BLUETOOTH)
   #include "bluetooth_driver.h"
-#endif
-
-#if defined(PWM_STICKS)
-  #include "sticks_pwm_driver.h"
 #endif
 
 #if defined(__cplusplus)
@@ -70,9 +69,6 @@ bool UNEXPECTED_SHUTDOWN()
 
 HardwareOptions hardwareOptions;
 
-// adc_driver.cpp
-extern const etx_hal_adc_driver_t _adc_driver;
-
 void watchdogInit(unsigned int duration)
 {
   IWDG->KR = 0x5555;      // Unlock registers
@@ -93,18 +89,15 @@ void boardInit()
 {
   RCC_AHB1PeriphClockCmd(PWR_RCC_AHB1Periph |
                          PCBREV_RCC_AHB1Periph |
-                         KEYS_RCC_AHB1Periph |
                          LCD_RCC_AHB1Periph |
                          AUDIO_RCC_AHB1Periph |
                          BACKLIGHT_RCC_AHB1Periph |
-                         ADC_RCC_AHB1Periph |
                          SD_RCC_AHB1Periph |
                          HAPTIC_RCC_AHB1Periph |
                          INTMODULE_RCC_AHB1Periph |
                          EXTMODULE_RCC_AHB1Periph |
                          TELEMETRY_RCC_AHB1Periph |
                          SPORT_UPDATE_RCC_AHB1Periph |
-                         AUX_SERIAL_RCC_AHB1Periph |
                          TRAINER_RCC_AHB1Periph |
                          BT_RCC_AHB1Periph |
                          USB_CHARGER_RCC_AHB1Periph,
@@ -113,7 +106,6 @@ void boardInit()
   RCC_APB1PeriphClockCmd(ROTARY_ENCODER_RCC_APB1Periph |
                          LCD_RCC_APB1Periph |
                          AUDIO_RCC_APB1Periph |
-                         ADC_RCC_APB1Periph |
                          BACKLIGHT_RCC_APB1Periph |
                          HAPTIC_RCC_APB1Periph |
                          INTERRUPT_xMS_RCC_APB1Periph |
@@ -126,7 +118,6 @@ void boardInit()
 
   RCC_APB2PeriphClockCmd(RCC_APB2Periph_SYSCFG |
                          BACKLIGHT_RCC_APB2Periph |
-                         ADC_RCC_APB2Periph |
                          HAPTIC_RCC_APB2Periph |
                          BT_RCC_APB2Periph |
                          TELEMETRY_RCC_APB2Periph,
@@ -136,7 +127,7 @@ void boardInit()
   bluetoothInit(BLUETOOTH_DEFAULT_BAUDRATE, true);
 #endif
 
-#if defined(RADIO_ZORRO) || defined(RADIO_TX12MK2) || defined(RADIO_BOXER)
+#if defined(MANUFACTURER_RADIOMASTER) && defined(STM32F407xx)
     
   if (FLASH_OB_GetBOR() != OB_BOR_LEVEL3)
   {
@@ -147,6 +138,7 @@ void boardInit()
   }
 #endif
 
+  init_trainer();
   // Sets 'hardwareOption.pcbrev' as well
   pwrInit();
   boardInitModulePorts();
@@ -219,9 +211,14 @@ void boardInit()
 #endif
 
   delaysInit();
+  __enable_irq();
 
 #if defined(PWM_STICKS)
   sticksPwmDetect();
+#endif
+
+#if defined(FLYSKY_GIMBAL)
+  flysky_gimbal_init();
 #endif
 
   if (!adcInit(&_adc_driver))
@@ -231,7 +228,6 @@ void boardInit()
   audioInit();
   init2MhzTimer();
   init1msTimer();
-  __enable_irq();
   usbInit();
 
 #if defined(DEBUG)

@@ -2,7 +2,10 @@
  * Copyright (C) EdgeTX
  *
  * Based on code named
- *   libopenui - https://github.com/opentx/libopenui
+ *   opentx - https://github.com/opentx/opentx
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
  *
  * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -16,5 +19,18 @@
  * GNU General Public License for more details.
  */
 
-#include "libopenui_helpers.h"
+#pragma once
 
+#include <TimerEdit>
+
+class TimezoneEdit : public TimerEdit
+{
+  Q_OBJECT
+
+  public:
+    explicit TimezoneEdit(QWidget * parent = Q_NULLPTR);
+    virtual ~TimezoneEdit() {}
+
+  protected:
+		void setupFormat() override;
+};

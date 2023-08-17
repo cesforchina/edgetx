@@ -150,7 +150,8 @@ ui(new Ui::GeneralSetup)
   }
 
   ui->gpsFormatCB->setCurrentIndex(generalSettings.gpsFormat);
-  ui->timezoneSB->setValue(generalSettings.timezone);
+
+  ui->timezoneLE->setTime((generalSettings.timezone * 3600) + (generalSettings.timezoneMinutes/*quarter hours*/ * 15 * 60));
 
   if (IS_HORUS_OR_TARANIS(firmware->getBoard())) {
     ui->adjustRTC->setChecked(generalSettings.adjustRTC);
@@ -250,12 +251,9 @@ ui(new Ui::GeneralSetup)
 
   ui->rssiPowerOffWarnChkB->setChecked(!generalSettings.disableRssiPoweroffAlarm); // Default is zero=checked
 
+  ui->splashScreenDuration->setCurrentIndex(3-generalSettings.splashMode);
   if (IS_FAMILY_HORUS_OR_T16(firmware->getBoard())) {
-    ui->splashScreenDuration->hide();
-    ui->splashScreenLabel->hide();
-  }
-  else {
-    ui->splashScreenDuration->setCurrentIndex(3-generalSettings.splashMode);
+    ui->splashScreenDuration->setItemText(0, QCoreApplication::translate("GeneralSetup", "1s", nullptr));
   }
 
   if (!firmware->getCapability(PwrButtonPress)) {
@@ -326,6 +324,16 @@ ui(new Ui::GeneralSetup)
 GeneralSetupPanel::~GeneralSetupPanel()
 {
   delete ui;
+}
+
+void GeneralSetupPanel::on_timezoneLE_textEdited(const QString &text)
+{
+  if (!lock) {
+    int secs = ui->timezoneLE->timeInSeconds();
+    generalSettings.timezone = secs / 3600;
+    generalSettings.timezoneMinutes = (secs % 3600) / (15 * 60); // timezoneMinutes in quarter hours
+    emit modified();
+  }
 }
 
 void GeneralSetupPanel::populateBacklightCB()
@@ -465,6 +473,8 @@ void GeneralSetupPanel::setValues()
   ui->pwrOffDelay->setValue(2 - generalSettings.pwrOffSpeed);
 
   ui->registrationId->setText(generalSettings.registrationId);
+
+  ui->startSoundCB->setChecked(!generalSettings.dontPlayHello);
 
   if (Boards::getCapability(firmware->getBoard(), Board::HasColorLcd)) {
     ui->modelQuickSelect_CB->setChecked(generalSettings.modelQuickSelect);
@@ -693,12 +703,6 @@ void GeneralSetupPanel::on_switchesDelay_valueChanged(int)
   emit modified();
 }
 
-void GeneralSetupPanel::on_timezoneSB_editingFinished()
-{
-  generalSettings.timezone = ui->timezoneSB->value();
-  emit modified();
-}
-
 void GeneralSetupPanel::on_adjustRTC_stateChanged(int)
 {
   generalSettings.adjustRTC = ui->adjustRTC->isChecked();
@@ -797,5 +801,11 @@ void GeneralSetupPanel::stickReverseEdited()
 void GeneralSetupPanel::on_modelQuickSelect_CB_stateChanged(int)
 {
   generalSettings.modelQuickSelect = ui->modelQuickSelect_CB->isChecked();
+  emit modified();
+}
+
+void GeneralSetupPanel::on_startSoundCB_stateChanged(int)
+{
+  generalSettings.dontPlayHello = !ui->startSoundCB->isChecked();
   emit modified();
 }

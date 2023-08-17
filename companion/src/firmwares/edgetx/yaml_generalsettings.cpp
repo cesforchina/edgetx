@@ -28,6 +28,7 @@
 #include "eeprominterface.h"
 #include "edgetxinterface.h"
 #include "version.h"
+#include "helpers.h"
 
 #include <QMessageBox>
 
@@ -147,13 +148,14 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   Node node;
 
   auto fw = getCurrentFirmware();
+  auto board = fw->getBoard();
 
-  bool hasColorLcd = Boards::getCapability(fw->getBoard(), Board::HasColorLcd);
+  bool hasColorLcd = Boards::getCapability(board, Board::HasColorLcd);
 
   node["semver"] = VERSION;
 
-  std::string board = fw->getFlavour().toStdString();
-  node["board"] = board;
+  std::string strboard = fw->getFlavour().toStdString();
+  node["board"] = strboard;
 
   YamlCalibData calib(rhs.calibMid, rhs.calibSpanNeg, rhs.calibSpanPos);
   node["calib"] = calib;
@@ -182,6 +184,7 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   node["hapticMode"] = rhs.hapticMode;
   node["stickMode"] = rhs.stickMode;
   node["timezone"] = rhs.timezone;
+  node["timezoneMinutes"] = rhs.timezoneMinutes;
   node["adjustRTC"] = (int)rhs.adjustRTC;
   node["inactivityTimer"] = rhs.inactivityTimer;
 
@@ -189,9 +192,7 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   node["internalModuleBaudrate"] = internalModuleBaudrate.value;
 
   node["internalModule"] = LookupValue(internalModuleLut, rhs.internalModule);
-  if (!IS_FAMILY_HORUS_OR_T16(fw->getBoard())) {
-    node["splashMode"] = rhs.splashMode;
-  }
+  node["splashMode"] = rhs.splashMode;
   node["lightAutoOff"] = rhs.backlightDelay;
   node["templateSetup"] = rhs.templateSetup;
   node["hapticLength"] = rhs.hapticLength + 2;
@@ -222,6 +223,7 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
   node["varioRange"] = rhs.varioRange * 15;
   node["varioRepeat"] = rhs.varioRepeat;
   node["backgroundVolume"] = rhs.backgroundVolume + 2;
+  node["dontPlayHello"] = (int)rhs.dontPlayHello;
   if (Boards::getCapability(fw->getBoard(), Board::HasColorLcd)) {
     node["modelQuickSelect"] = (int)rhs.modelQuickSelect;
   }
@@ -261,16 +263,38 @@ Node convert<GeneralSettings>::encode(const GeneralSettings& rhs)
     node["switchConfig"] = switchConfig;
   }
 
-  Node potsConfig;
-  potsConfig = YamlPotConfig(rhs.potName, rhs.potConfig);
-  if (potsConfig && potsConfig.IsMap()) {
-    node["potsConfig"] = potsConfig;
+  //  TODO revisit when Companion refactored for adc
+  //  adc encoding requires pots and sliders to be merged in a prescribed sequence as defined in radio json
+  int maxPots = CPN_MAX_POTS + CPN_MAX_SLIDERS;
+  char potName[maxPots][HARDWARE_NAME_LEN + 1];
+  unsigned int potConfig[maxPots];
+
+  const int sticks = Boards::getCapability(board, Board::Sticks);
+  int adcoffset = sticks;
+  int seq = 0;
+
+  for (int i = 0; i < Boards::getCapability(board, Board::Pots); i++) {
+    seq = getCurrentFirmware()->getAnalogInputSeqADC(adcoffset + i) - sticks;
+    if (seq >= 0 && seq < maxPots) {
+      strcpy(potName[seq], rhs.potName[i]);
+      potConfig[seq] = rhs.potConfig[i];
+    }
   }
 
-  Node slidersConfig;
-  slidersConfig = YamlSliderConfig(rhs.sliderName, rhs.sliderConfig);
-  if (slidersConfig && slidersConfig.IsMap()) {
-    node["slidersConfig"] = slidersConfig;
+  adcoffset += Boards::getCapability(board, Board::Pots);
+
+  for (int i = 0; i < Boards::getCapability(board, Board::Sliders); i++) {
+    seq = getCurrentFirmware()->getAnalogInputSeqADC(adcoffset + i) - sticks;
+    if (seq >= 0 && seq < maxPots) {
+      strcpy(potName[seq], rhs.sliderName[i]);
+      potConfig[seq] = rhs.sliderConfig[i];
+    }
+  }
+
+  Node potsConfig;
+  potsConfig = YamlPotConfig(potName, potConfig);
+  if (potsConfig && potsConfig.IsMap()) {
+    node["potsConfig"] = potsConfig;
   }
 
   // Color lcd theme settings are not used in EdgeTx
@@ -314,7 +338,29 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   //   qDebug() << QString::fromStdString(n.first.Scalar());
   // }
 
-  node["semver"] >> rhs.semver;
+  radioSettingsVersion = SemanticVersion();
+
+  if (node["semver"]) {
+    node["semver"] >> rhs.semver;
+    if (SemanticVersion().isValid(rhs.semver)) {
+      radioSettingsVersion = SemanticVersion(QString(rhs.semver));
+    }
+    else {
+      qDebug() << "Invalid settings version:" << rhs.semver;
+      memset(rhs.semver, 0, sizeof(rhs.semver));
+    }
+  }
+
+  qDebug() << "Settings version:" << radioSettingsVersion.toString();
+
+  if (radioSettingsVersion > SemanticVersion(VERSION)) {
+    QString prmpt = QCoreApplication::translate("YamlGeneralSettings", "Warning: Radio settings file version %1 is not supported by this version of Companion!\n\nModel and radio settings may be corrupted if you continue.\n\nI acknowledge and accept the consequences.");
+    if (QMessageBox::warning(NULL, CPN_STR_APP_NAME, prmpt.arg(radioSettingsVersion.toString()), (QMessageBox::Yes | QMessageBox::No), QMessageBox::No) != QMessageBox::Yes) {
+      //  TODO: this triggers an error in the calling code so we need a graceful way to handle
+      return false;
+    }
+  }
+
   rhs.version = CPN_CURRENT_SETTINGS_VERSION; // depreciated in EdgeTX however data conversions use
 
   // Decoding uses profile firmare therefore all conversions are performed on the fly
@@ -335,6 +381,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["board"] >> flavour;
 
   auto fw = getCurrentFirmware();
+  auto board = fw->getBoard();
 
   qDebug() << "Settings version:" << rhs.semver << "File flavour:" << flavour.c_str() << "Firmware flavour:" << fw->getFlavour();
 
@@ -390,6 +437,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["hapticMode"] >> rhs.hapticMode;
   node["stickMode"] >> rhs.stickMode;
   node["timezone"] >> rhs.timezone;
+  node["timezoneMinutes"] >> rhs.timezoneMinutes;
   node["adjustRTC"] >> rhs.adjustRTC;
   node["inactivityTimer"] >> rhs.inactivityTimer;
 
@@ -407,9 +455,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
     rhs.internalModule = Boards::getDefaultInternalModules(fw->getBoard());
   }
 
-  if (!IS_FAMILY_HORUS_OR_T16(fw->getBoard())) {
-    node["splashMode"] >> rhs.splashMode;
-  }
+  node["splashMode"] >> rhs.splashMode;
   node["lightAutoOff"] >> rhs.backlightDelay;
   node["templateSetup"] >> rhs.templateSetup;
   node["hapticLength"] >> ioffset_int(rhs.hapticLength, 2);
@@ -443,6 +489,7 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["varioRepeat"] >> rhs.varioRepeat;
   node["backgroundVolume"] >> ioffset_int(rhs.backgroundVolume, 2);
   node["modelQuickSelect"] >> rhs.modelQuickSelect;
+  node["dontPlayHello"] >> rhs.dontPlayHello;
 
   //  depreciated v2.7 replaced by serialPort
   if (node["auxSerialMode"]) {
@@ -495,13 +542,34 @@ bool convert<GeneralSettings>::decode(const Node& node, GeneralSettings& rhs)
   node["switchConfig"] >> switchConfig;
   switchConfig.copy(rhs.switchName, rhs.switchConfig);
 
+  //  TODO: revisit when Companion refactored to support adc
+  //  adc pots and sliders decoded into a single array but Compapanion has separate arrays
+  int maxPots = CPN_MAX_POTS + CPN_MAX_SLIDERS; // must match YamlPotConfig declaration
+  char potName[maxPots][HARDWARE_NAME_LEN + 1];
+  unsigned int potConfig[maxPots];
+
   YamlPotConfig potsConfig;
   node["potsConfig"] >> potsConfig;
-  potsConfig.copy(rhs.potName, rhs.potConfig);
+  potsConfig.copy(potName, potConfig);
 
-  YamlSliderConfig slidersConfig;
-  node["slidersConfig"] >> slidersConfig;
-  slidersConfig.copy(rhs.sliderName, rhs.sliderConfig);
+  int numPots = Boards::getCapability(board, Board::Pots);
+
+  for (int i = 0; i < numPots; i++) {
+    strcpy(rhs.potName[i], potName[i]);
+    rhs.potConfig[i] = potConfig[i];
+  }
+
+  if (radioSettingsVersion < SemanticVersion(QString(CPN_ADC_REFACTOR_VERSION))) {
+    YamlSliderConfig slidersConfig;
+    node["slidersConfig"] >> slidersConfig;
+    slidersConfig.copy(rhs.sliderName, rhs.sliderConfig);
+  }
+  else {
+    for (int i = 0; i < Boards::getCapability(board, Board::Sliders); i++) {
+      strcpy(rhs.sliderName[i], potName[numPots + i]);
+      rhs.sliderConfig[i] = potConfig[numPots + i];
+    }
+  }
 
   // Color lcd theme settings are not used in EdgeTx
   // RadioTheme::ThemeData themeData;

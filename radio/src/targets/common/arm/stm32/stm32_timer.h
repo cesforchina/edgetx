@@ -2,7 +2,10 @@
  * Copyright (C) EdgeTX
  *
  * Based on code named
- *   libopenui - https://github.com/opentx/libopenui
+ *   opentx - https://github.com/opentx/opentx
+ *   th9x - http://code.google.com/p/th9x
+ *   er9x - http://code.google.com/p/er9x
+ *   gruvin9x - http://code.google.com/p/gruvin9x
  *
  * License GPLv2: http://www.gnu.org/licenses/gpl-2.0.html
  *
@@ -16,22 +19,9 @@
  * GNU General Public License for more details.
  */
 
-#include "simple_btn.h"
+#pragma once
 
-#define MY_CLASS &simple_btn_class
+#include "stm32_hal_ll.h"
 
-const lv_obj_class_t simple_btn_class = {
-    .width_def = LV_DPI_DEF,
-    .height_def = LV_DPI_DEF,
-    .group_def = LV_OBJ_CLASS_GROUP_DEF_TRUE,
-    .instance_size = sizeof(lv_btn_t),
-    .base_class = &lv_btn_class,
-};
-
-lv_obj_t* simple_btn_create(lv_obj_t* parent)
-{
-    LV_LOG_INFO("begin");
-    lv_obj_t * obj = lv_obj_class_create_obj(MY_CLASS, parent);
-    lv_obj_class_init_obj(obj);
-    return obj;
-}
+void stm32_timer_enable_clock(TIM_TypeDef *TIMx);
+void stm32_timer_disable_clock(TIM_TypeDef *TIMx);
