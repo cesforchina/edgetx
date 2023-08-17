@@ -47,6 +47,16 @@
    2/3/4 SDIO
 */
 
+// Keys
+#define KEYS_GPIO_REG_ENTER             GPIOI
+#define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_3  // PI.03
+#define KEYS_GPIO_REG_MDL               GPIOI
+#define KEYS_GPIO_PIN_MDL               LL_GPIO_PIN_4  // PI.04
+#define KEYS_GPIO_REG_PAGEDN            GPIOI
+#define KEYS_GPIO_PIN_PAGEDN            LL_GPIO_PIN_6  // PI.06
+#define KEYS_GPIO_REG_EXIT              GPIOI
+#define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_7  // PI.07
+
 
 // Trims
 #define TRIMS_GPIO_REG_RHL              GPIOD
@@ -58,8 +68,8 @@
 #define TRIMS_GPIO_REG_RVU              GPIOB
 #define TRIMS_GPIO_PIN_RVU              LL_GPIO_PIN_15 // PB.15
 
-#define KEYS_GPIO_REG_ENTER             GPIOC
-#define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_13 // PC.13
+// #define KEYS_GPIO_REG_ENTER             GPIOC
+// #define KEYS_GPIO_PIN_ENTER             LL_GPIO_PIN_13 // PC.13
 
 #define TRIMS_GPIO_REG_LHL              GPIOH
 #define TRIMS_GPIO_PIN_LHL              LL_GPIO_PIN_2  // PH.02
@@ -70,13 +80,34 @@
 #define TRIMS_GPIO_REG_LVD              GPIOJ
 #define TRIMS_GPIO_PIN_LVD              LL_GPIO_PIN_12 // PJ.12
 
-#define KEYS_GPIO_REG_EXIT              GPIOG
-#define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_11 // PG.11
+// #define KEYS_GPIO_REG_EXIT              GPIOG
+// #define KEYS_GPIO_PIN_EXIT              LL_GPIO_PIN_11 // PG.11
+
+
 
 // Monitor pin
 #define MONITOR_RCC_AHB1Periph          (RCC_AHB1Periph_GPIOJ)
 #define VBUS_MONITOR_GPIO               (GPIOJ)
 #define VBUS_MONITOR_PIN                (GPIO_Pin_14)
+
+// Rotary Encoder
+#define ROTARY_ENCODER_RCC_APB1Periph   RCC_APB1Periph_TIM5
+#define ROTARY_ENCODER_GPIO             GPIOD
+#define ROTARY_ENCODER_GPIO_PIN_A       GPIO_Pin_12 // PD.12
+#define ROTARY_ENCODER_GPIO_PIN_B       GPIO_Pin_13 // PD.13
+#define ROTARY_ENCODER_POSITION()       ((ROTARY_ENCODER_GPIO->IDR >> 12) & 0x03)
+#define ROTARY_ENCODER_EXTI_LINE1       LL_EXTI_LINE_12
+#define ROTARY_ENCODER_EXTI_LINE2       LL_EXTI_LINE_13
+#if !defined(USE_EXTI15_10_IRQ)
+  #define USE_EXTI15_10_IRQ
+  #define EXTI15_10_IRQ_Priority 5
+#endif
+#define ROTARY_ENCODER_EXTI_PORT        LL_SYSCFG_EXTI_PORTD
+#define ROTARY_ENCODER_EXTI_SYS_LINE1   LL_SYSCFG_EXTI_LINE12
+#define ROTARY_ENCODER_EXTI_SYS_LINE2   LL_SYSCFG_EXTI_LINE13
+#define ROTARY_ENCODER_TIMER            TIM5
+#define ROTARY_ENCODER_TIMER_IRQn       TIM5_IRQn
+#define ROTARY_ENCODER_TIMER_IRQHandler TIM5_IRQHandler
 
 // Switches
 #define HARDWARE_SWITCH_A
@@ -96,16 +127,19 @@
 #define HARDWARE_SWITCH_H
 #define STORAGE_SWITCH_H
 
-// Index of all switches / trims
+
+// Index of all keys / switches / trims
+
 #define KEYS_GPIO_ACTIVE_HIGH
 #define TRIMS_GPIO_ACTIVE_HIGH
 
 // ADC
 
-#define ADC_GPIO_PIN_STICK_LH
-#define ADC_GPIO_PIN_STICK_LV
-#define ADC_GPIO_PIN_STICK_RV
-#define ADC_GPIO_PIN_STICK_RH
+// FLYSKY_HALL_STICKS & ADC_STICKS //or PWM STICKS
+#define ADC_GPIO_PIN_STICK_LH       GPIO_Pin_2      // PA.02
+#define ADC_GPIO_PIN_STICK_LV       GPIO_Pin_3      // PA.03
+#define ADC_GPIO_PIN_STICK_RH       GPIO_Pin_4      // PA.04
+#define ADC_GPIO_PIN_STICK_RV       GPIO_Pin_5      // PA.05
 
 #define ADC_GPIO_PIN_POT1               LL_GPIO_PIN_6      // PA.06 VRA
 #define ADC_GPIO_PIN_POT2               LL_GPIO_PIN_4      // PC.04 VRB
@@ -120,18 +154,19 @@
 
 #define ADC_GPIO_PIN_BATT               LL_GPIO_PIN_5      // PC.05
 
-// FLYSKY_HALL_STICKS
+// FLYSKY_HALL_STICKS & ADC_STICKS
 // #define ADC_GPIOA_PINS_FS               (GPIO_Pin_6 | GPIO_Pin_7)
-#define ADC_GPIOA_PINS                  (ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SWH)
+#define ADC_GPIOA_PINS \
+  (ADC_GPIO_PIN_STICK_LH | ADC_GPIO_PIN_STICK_LV | ADC_GPIO_PIN_STICK_RH  | ADC_GPIO_PIN_STICK_RV | ADC_GPIO_PIN_POT1 | ADC_GPIO_PIN_SWH)
 #define ADC_GPIOB_PINS                  (ADC_GPIO_PIN_SWA | ADC_GPIO_PIN_SWC)
 #define ADC_GPIOC_PINS \
   (ADC_GPIO_PIN_POT2 | ADC_GPIO_PIN_SWE | ADC_GPIO_PIN_SWF | ADC_GPIO_PIN_SWG | ADC_GPIO_PIN_BATT)
 #define ADC_GPIOF_PINS                  (ADC_GPIO_PIN_SWB | ADC_GPIO_PIN_SWD)
 
-#define ADC_CHANNEL_STICK_LH
-#define ADC_CHANNEL_STICK_LV
-#define ADC_CHANNEL_STICK_RV
-#define ADC_CHANNEL_STICK_RH
+#define ADC_CHANNEL_STICK_LH            LL_ADC_CHANNEL_2   // ADC123_IN2 -> ADC1_IN2
+#define ADC_CHANNEL_STICK_LV            LL_ADC_CHANNEL_3   // ADC123_IN3 -> ADC1_IN3
+#define ADC_CHANNEL_STICK_RH            LL_ADC_CHANNEL_4   // ADC12_IN4  -> ADC1_IN4
+#define ADC_CHANNEL_STICK_RV            LL_ADC_CHANNEL_5   // ADC12_IN5  -> ADC1_IN5
 
 #define ADC_CHANNEL_POT1                LL_ADC_CHANNEL_6   // ADC12_IN6  -> ADC1_IN6
 #define ADC_CHANNEL_POT2                LL_ADC_CHANNEL_14  // ADC12_IN14 -> ADC1_IN14
@@ -163,7 +198,7 @@
 #define ADC_EXT_DMA_STREAM_IRQ          DMA2_Stream0_IRQn
 #define ADC_EXT_DMA_STREAM_IRQHandler   DMA2_Stream0_IRQHandler
 #define ADC_EXT_SAMPTIME                LL_ADC_SAMPLINGTIME_28CYCLES
-#define ADC_VREF_PREC2                  660
+#define ADC_VREF_PREC2                  330
 
 #define ADC_DIRECTION                                                   \
     { 0 /*STICK1*/, 0 /*STICK2*/, 0 /*STICK3*/, 0 /*STICK4*/,           \
@@ -289,7 +324,7 @@
 //used in BOOTLOADER
 #define SERIAL_RCC_AHB1Periph           0
 #define SERIAL_RCC_APB1Periph           0
-#define ROTARY_ENCODER_RCC_APB1Periph   0
+//#define ROTARY_ENCODER_RCC_APB1Periph   0
 
 // SD card
 #define SD_RCC_AHB1Periph               (RCC_AHB1Periph_GPIOC | RCC_AHB1Periph_GPIOD | RCC_AHB1Periph_GPIOH | RCC_AHB1Periph_DMA2)

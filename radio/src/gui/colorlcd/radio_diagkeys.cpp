@@ -115,6 +115,12 @@ class RadioKeyDiagsWindow : public Window
         dc->drawText(KEY_COLUMN, y, keysGetLabel(KEY_ENTER), COLOR_THEME_PRIMARY1);
         displayKeyState(dc, 70, y, KEY_ENTER);
         y += FH;
+        dc->drawText(KEY_COLUMN, y, keysGetLabel(KEY_MODEL), COLOR_THEME_PRIMARY1);
+        displayKeyState(dc, 70, y, KEY_MODEL);
+        y += FH;
+        dc->drawText(KEY_COLUMN, y, keysGetLabel(KEY_PAGEDN), COLOR_THEME_PRIMARY1);
+        displayKeyState(dc, 70, y, KEY_PAGEDN);
+        y += FH;
         dc->drawText(KEY_COLUMN, y, keysGetLabel(KEY_EXIT), COLOR_THEME_PRIMARY1);
         displayKeyState(dc, 70, y, KEY_EXIT);
       }      
@@ -122,6 +128,7 @@ class RadioKeyDiagsWindow : public Window
       // SWITCHES
       for (uint8_t i = 0; i < switchGetMaxSwitches(); i++) {
         if (SWITCH_EXISTS(i)) {
+          
           coord_t y = 1 + FH * i;
           getvalue_t val = getValue(MIXSRC_FIRST_SWITCH + i);
           getvalue_t sw = ((val < 0) ? 3 * i + 1 : ((val == 0) ? 3 * i + 2 : 3 * i + 3));

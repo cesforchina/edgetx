@@ -23,10 +23,12 @@
 
 #include "board.h"
 #include "boards/generic_stm32/module_ports.h"
+#include "boards/generic_stm32/analog_inputs.h"
 
 #include "hal/adc_driver.h"
 #include "hal/trainer_driver.h"
 #include "hal/switch_driver.h"
+#include "hal/rotary_encoder.h"
 
 #include "globals.h"
 #include "sdcard.h"
@@ -35,6 +37,9 @@
 
 #include "flysky_gimbal_driver.h"
 #include "timers_driver.h"
+
+#include "dataconstants.h"
+#include "opentx_types.h"
 
 #include "lcd_driver.h"
 #include "lcd_driver.h"
@@ -46,6 +51,10 @@
 #include "colors.h"
 
 #include <string.h>
+
+#if defined(PWM_STICKS)
+  #include "sticks_pwm_driver.h"
+#endif
 
 #if defined(__cplusplus) && !defined(SIMU)
 extern "C" {
@@ -126,7 +135,8 @@ void delay_self(int count)
                               )
 #define RCC_AHB3PeriphMinimum (SDRAM_RCC_AHB3Periph)
 
-#define RCC_APB1PeriphMinimum (INTERRUPT_xMS_RCC_APB1Periph |\
+#define RCC_APB1PeriphMinimum (ROTARY_ENCODER_RCC_APB1Periph |\
+                               INTERRUPT_xMS_RCC_APB1Periph |\
                                TIMER_2MHz_RCC_APB1Periph |\
                                BACKLIGHT_RCC_APB1Periph \
                               )
@@ -228,6 +238,10 @@ void boardInit()
   init_trainer();
   battery_charge_init();
   flysky_gimbal_init();
+
+  if (!adcInit(&_adc_driver))
+  TRACE("adcInit failed");
+
   init2MhzTimer();
   init1msTimer();
   TouchInit();
@@ -272,13 +286,19 @@ void boardInit()
 
   keysInit();
   switchInit();
+
+  rotaryEncoderInit();
+  
   audioInit();
   monitorInit();
   adcInit(&_adc_driver);
   hapticInit();
+  
+#if defined(PWM_STICKS)
+  sticksPwmDetect();
+#endif
 
-
- #if defined(RTCLOCK)
+#if defined(RTCLOCK)
   rtcInit(); // RTC must be initialized before rambackupRestore() is called
 #endif
 

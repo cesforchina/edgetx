@@ -2,7 +2,8 @@ option(DISK_CACHE "Enable SD card disk cache" ON)
 option(UNEXPECTED_SHUTDOWN "Enable the Unexpected Shutdown screen" ON)
 option(STICKS_DEAD_ZONE "Enable sticks dead zone" YES)
 option(MULTIMODULE "DIY Multiprotocol TX Module (https://github.com/pascallanger/DIY-Multiprotocol-TX-Module)" ON)
-option(AFHDS2 "Support for AFHDS2" ON)
+option(AFHDS2 "Support for AFHDS2" OFF)
+option(AFHDS3 "Support for AFHDS3" ON)
 option(GHOST "Ghost TX Module" ON)
 option(PXX1 "PXX1 protocol support" ON)
 option(PXX2 "PXX2 protocol support" OFF)
@@ -17,6 +18,7 @@ set(HAPTIC YES)
 set(GUI_DIR colorlcd)
 set(BITMAPS_DIR 480x272)
 set(HARDWARE_EXTERNAL_MODULE YES)
+set(ROTARY_ENCODER YES)
 
 set(TARGET_DIR nv14)
 add_definitions(-DHARDWARE_TRAINER_JACK)
@@ -34,17 +36,18 @@ set(CPU_TYPE_FULL STM32F429xI)
 set(SIZE_TARGET_MEM_DEFINE "MEM_SIZE_SDRAM2=8192")
 option(USB_SERIAL "Enable USB serial (CDC)" ON)
 
-set(RF_BAUD_RATE 921600 230400 115200 57600 38400 19200 9600 4800 2400 1200)
-set(PCB_RF_BAUD 921600 CACHE STRING "INTERNAL_MODULE_BAUDRATE: ${RF_BAUD_RATE}")
-set_property(CACHE PCB_RF_BAUD PROPERTY STRINGS ${RF_BAUD_RATE})
+#set(RF_BAUD_RATE 921600 230400 115200 57600 38400 19200 9600 4800 2400 1200)
+#set(PCB_RF_BAUD 921600 CACHE STRING "INTERNAL_MODULE_BAUDRATE: ${RF_BAUD_RATE}")
+#set_property(CACHE PCB_RF_BAUD PROPERTY STRINGS ${RF_BAUD_RATE})
 
 set(FLAVOUR nv14)
-add_definitions(-DPCBNV14 -DPCBFLYSKY -DAFHDS2_BAUDRATE=${PCB_RF_BAUD})
+#add_definitions(-DPCBNV14 -DPCBFLYSKY -DAFHDS2_BAUDRATE=${PCB_RF_BAUD})
+add_definitions(-DPCBNV14 -DPCBFLYSKY)
 add_definitions(-DBATTERY_CHARGE -DUSE_TRIMS_AS_BUTTONS)
 
 # defines existing internal modules
-set(INTERNAL_MODULES AFHDS2A;AFHDS3 CACHE STRING "Internal modules")
-set(DEFAULT_INTERNAL_MODULE FLYSKY CACHE STRING "Default internal module")
+set(INTERNAL_MODULES AFHDS3;XJT;MULTI;CRSF CACHE STRING "Internal modules")
+set(DEFAULT_INTERNAL_MODULE CROSSFIRE CACHE STRING "Default internal module")
 
 set(BITMAPS_TARGET nv14_bitmaps)
 set(FONTS_TARGET x12_fonts)
@@ -80,7 +83,7 @@ if(STICKS_DEAD_ZONE)
   add_definitions(-DSTICK_DEAD_ZONE)
 endif()
 
-set(AFHDS2 ON)
+#set(AFHDS2 ON)
 set(AFHDS3 ON)
 
 # VCP CLI
@@ -143,8 +146,10 @@ set(FIRMWARE_SRC
   hal/adc_driver.cpp
   targets/common/arm/stm32/stm32_adc.cpp
   targets/common/arm/stm32/timers_driver.cpp
+  targets/common/arm/stm32/stm32_exti_driver.cpp
   targets/common/arm/stm32/stm32_pulse_driver.cpp
   targets/common/arm/stm32/stm32_usart_driver.cpp
+  targets/common/arm/stm32/rotary_encoder_driver.cpp
   targets/common/arm/stm32/trainer_driver.cpp
   targets/common/arm/stm32/pwr_driver.cpp
   targets/common/arm/stm32/sdio_sd.cpp
