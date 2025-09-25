@@ -39,4 +39,4 @@ constexpr coord_t MENUS_MAX_HEIGHT = 7 * MENUS_LINE_HEIGHT - 1;
 constexpr rect_t MENUS_TOOLBAR_RECT =              { 35, (LCD_H - MENUS_MAX_HEIGHT) / 2, 50, MENUS_MAX_HEIGHT };
 
 // Disable rotary encoder, as the NV14 does not have one
-#define ROTARY_ENCODER_SPEED() 0
+#define ROTARY_ENCODER_SPEED() rotencSpeed
