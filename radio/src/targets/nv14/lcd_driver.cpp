@@ -1029,13 +1029,13 @@ void LCD_ST7796S_Init(void) {
   lcdWriteData( 0x65 );
 
   lcdWriteCommand( 0xC1 );
-  lcdWriteData( 0x03 );
+  lcdWriteData( 0x06 );
 
   lcdWriteCommand( 0xC2 );
   lcdWriteData( 0xA7 );
 
   lcdWriteCommand( 0xC5 );
-  lcdWriteData( 0x25 );
+  lcdWriteData( 0x18 );
 
   lcdWriteCommand( 0xE8 );
   lcdWriteData( 0x40 );
